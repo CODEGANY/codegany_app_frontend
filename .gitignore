@@ -1,0 +1,57 @@
+# Dépendances Node.js
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Dossier de build
+build/
+dist/
+.cache/
+out/
+
+# Fichiers d'environnement
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Caches et tests
+coverage/
+.jest/
+.jest-cache/
+.jest-test-results.json
+
+# IDE / éditeurs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS / Système
+.DS_Store
+Thumbs.db
+
+# Service Workers (si utilisés)
+public/sw.js
+public/workbox-*
+
+# ESLint et StyleLint
+.eslintcache
+stylelintcache
+
+# Storybook
+.storybook/out/
+.storybook-static/
+
+# Next.js (si applicable)
+.next/
+.vercel/
