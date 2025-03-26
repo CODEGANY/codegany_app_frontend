@@ -3,9 +3,7 @@ import LoginComponent from "../components/auth/LoginComponent";
 
 function LoginPage() {
   return (
-    <div>
       <LoginComponent/>
-    </div>
   );
 }
 
