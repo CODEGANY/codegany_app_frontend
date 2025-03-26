@@ -1,8 +1,8 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { AuthHooks } from '../../hooks/AuthHooks';
+import { useAuth } from '../../hooks/AuthHooks';
 
 const LoginComponent = () => {
-  const { login } = AuthHooks();
+  const { login } = useAuth();
 
   const handleSuccess = (response) => {
     login(response.credential); // Stocke le token

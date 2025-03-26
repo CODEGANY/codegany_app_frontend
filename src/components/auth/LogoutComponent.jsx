@@ -1,7 +1,7 @@
-import { AuthHooks } from '../../hooks/AuthHooks';
+import { useAuth } from '../../hooks/AuthHooks';
 
 const LogoutComponent = () => {
-  const { logout } = AuthHooks();
+  const { logout } = useAuth();
 
   return (
     <button onClick={logout}>Déconnexion</button>

@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import { sendGoogleTokenBack } from '../services/authService';
+import { sendGoogleTokenBack } from '../services/AuthService';
 
-
-export const AuthHooks = () => {
+/**
+ * Custom hook for authentication functionality
+ * @returns {Object} Authentication utilities and state
+ */
+export const useAuth = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -14,32 +16,27 @@ export const AuthHooks = () => {
     localStorage.setItem('token', token);
     const response = await sendGoogleTokenBack(token);
 
-    if (response.exists == false) {
+    if (response.exists === false) {
       console.log("Utilisateur non inscrit");
     } else {
-    //Verification du role de l'utilisateur
-    switch (response.user_data.role) {
-      case "logistique":
-        console.log("Page logistique");
-      break;
+      //Verification du role de l'utilisateur
+      switch (response.user_data.role) {
+        case "logistique":
+          console.log("Page logistique");
+          navigate('/dashboard'); // Redirigez vers le tableau de bord
+          break;
 
-      case "DAF":
-        console.log("Page DAF");
-      break;
+        case "daf":
+          console.log("Page DAF");
+          navigate('/dashboard'); // Redirigez vers le tableau de bord
+          break;
 
-      case "logistique":
-        console.log("Page logistique");
-      break;
-
-    default:
-      console.log("Par defaut");
-      break;
+        default:
+          console.log("Par defaut");
+          navigate('/dashboard'); // Redirigez par défaut
+          break;
+      }
     }
-  }
-   
-
-  
-    // navigate('/home'); // Redirige après connexion
   };
 
   const logout = () => {
@@ -50,3 +47,6 @@ export const AuthHooks = () => {
 
   return { user, login, logout };
 };
+
+// Keep the original export for backward compatibility
+export const AuthHooks = useAuth;
