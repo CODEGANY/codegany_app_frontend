@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from '../contexts/AuthContext';
 import { toast } from 'sonner';
-import { getInfoAboutTokenUser, sendRegistration } from "@/services/Api";
-
+import { getInfoAboutTokenUser, sendRegistration } from "@/api/authApi";
 
 
 export const LoginSigninHooks = ()=>{

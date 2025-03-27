@@ -5,10 +5,12 @@ import DashboardPage from "./pages/DashboardPage";
 import { AuthContext } from "./contexts/AuthContext";
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import OrdersPage from './pages/OrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
+
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
-
   if (loading) {
     return <div>Chargement...</div>; // Affiche un loader pendant la vérification (à revoir)
   }
@@ -18,11 +20,9 @@ const PrivateRoute = ({ children }) => {
 // Route publique (pour utilisateurs non connectés)
 const PublicRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
-
   if (loading) {
     return <div>Chargement...</div>;
   }
-
   return user ? <Navigate to="/dashboard" /> : children;
 };
 
@@ -46,8 +46,21 @@ return(
         </PrivateRoute>
         } />
 
+      <Route path="/orders" element={
+        <PrivateRoute>
+          <OrdersPage />
+        </PrivateRoute>
+        } />
+
+      <Route path="/orders/:id" element={
+        <PrivateRoute>
+          <OrderDetailPage />
+        </PrivateRoute>
+        } />
+
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="*" element={<Navigate to="/" />} />
+
     </Routes>
   </BrowserRouter>
 );
