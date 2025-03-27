@@ -21,64 +21,6 @@ import { Link } from 'react-router-dom';
  * @property {number} total_actual_cost - Total order amount
  */
 
-const MOCK_ORDERS = [
-  {
-    order_id: 1,
-    request_id: 101,
-    supplier_id: 201,
-    order_number: 'CMD-2025-0342',
-    supplier_name: 'Fournitures Express',
-    tracking_status: 'delivered',
-    ordered_at: '2025-03-15T10:30:00',
-    delivered_at: '2025-03-20T14:20:00',
-    total_actual_cost: 12450.75
-  },
-  {
-    order_id: 2,
-    request_id: 102,
-    supplier_id: 202,
-    order_number: 'CMD-2025-0341',
-    supplier_name: 'Bureau Pro',
-    tracking_status: 'shipped',
-    ordered_at: '2025-03-10T14:20:00',
-    delivered_at: null,
-    total_actual_cost: 5670.25
-  },
-  {
-    order_id: 3,
-    request_id: 103,
-    supplier_id: 203,
-    order_number: 'CMD-2025-0340',
-    supplier_name: 'Équipements Industriels SA',
-    tracking_status: 'prepared',
-    ordered_at: '2025-03-05T09:15:00',
-    delivered_at: null,
-    total_actual_cost: 28940.50
-  },
-  {
-    order_id: 4,
-    request_id: 104,
-    supplier_id: 204,
-    order_number: 'CMD-2025-0339',
-    supplier_name: 'Matériel Tech',
-    tracking_status: 'delivered',
-    ordered_at: '2025-02-28T16:45:00',
-    delivered_at: '2025-03-04T11:30:00',
-    total_actual_cost: 3450.80
-  },
-  {
-    order_id: 5,
-    request_id: 105,
-    supplier_id: 205,
-    order_number: 'CMD-2025-0338',
-    supplier_name: 'Outillage Professionnel',
-    tracking_status: 'delivered',
-    ordered_at: '2025-02-25T11:10:00',
-    delivered_at: '2025-03-01T09:45:00',
-    total_actual_cost: 9875.30
-  }
-];
-
 /**
  * Returns the appropriate status badge for the order status
  * @param {TrackingStatus} status - The order tracking status
@@ -121,73 +63,79 @@ const StatusBadge = ({ status }) => {
 
 /**
  * Table component showing purchase orders with their status
+ * @param {Object} props Component props
+ * @param {Array<OrderItem>} [props.orders] Orders to display
+ * @param {boolean} [props.showAll] Whether to show all orders or just the first few
+ * @returns {JSX.Element} Table component
  */
-const PurchaseOrderTable = () => {
+const PurchaseOrderTable = ({ orders = [], showAll = false }) => {
+  // If not showing all, limit to 5 orders
+  const limitedOrders = showAll ? orders : orders.slice(0, 5);
+  const hasOrders = limitedOrders.length > 0;
+
   return (
     <div className="overflow-x-auto rounded-lg border">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Commande
-            </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Fournisseur
-            </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Date
-            </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Montant
-            </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Statut
-            </th>
-            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {MOCK_ORDERS.map((order) => (
-            <tr key={order.order_id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <Package className="h-5 w-5 text-gray-400 mr-2" />
-                  <span className="text-sm font-medium text-gray-900">{order.order_number}</span>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{order.supplier_name}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">
-                  {format(new Date(order.ordered_at), 'dd MMM yyyy', { locale: fr })}
-                </div>
-                <div className="text-sm text-gray-500">
-                  {format(new Date(order.ordered_at), 'HH:mm', { locale: fr })}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">
-                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(order.total_actual_cost)}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <StatusBadge status={order.tracking_status} />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <Link 
-                  to={`/orders/${order.order_id}`} 
-                  className="text-indigo-600 hover:text-indigo-900 inline-flex items-center"
-                >
-                  Détails <ExternalLink className="ml-1 h-3 w-3" />
-                </Link>
-              </td>
+      {hasOrders ? (
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Commande
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Fournisseur
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Statut
+              </th>
+              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Action
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {limitedOrders.map((order) => (
+              <tr key={order.order_id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <Package className="h-5 w-5 text-gray-400 mr-2" />
+                    <span className="text-sm font-medium text-gray-900">{order.order_number}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{order.supplier_name}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {format(new Date(order.ordered_at), 'dd MMM yyyy', { locale: fr })}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {format(new Date(order.ordered_at), 'HH:mm', { locale: fr })}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <StatusBadge status={order.tracking_status} />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <Link 
+                    to={`/orders/${order.order_id}`} 
+                    className="text-indigo-600 hover:text-indigo-900 inline-flex items-center"
+                  >
+                    Détails <ExternalLink className="ml-1 h-3 w-3" />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="text-center py-8 text-muted-foreground">
+          <p>Aucune commande disponible</p>
+        </div>
+      )}
     </div>
   );
 };

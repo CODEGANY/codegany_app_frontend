@@ -1,6 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import { useState, useEffect, createContext } from 'react';
 import RoutesApp from './routesApp';
+
+// Create a React Query client
+const queryClient = new QueryClient();
 
 // Create a theme context to manage theme state
 export const ThemeContext = createContext({
@@ -35,11 +39,13 @@ function App() {
   }, [theme]);
   
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <AuthProvider>
-        <RoutesApp/>
-      </AuthProvider>
-    </ThemeContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <AuthProvider>
+          <RoutesApp/>
+        </AuthProvider>
+      </ThemeContext.Provider>
+    </QueryClientProvider>
   );
 }
 

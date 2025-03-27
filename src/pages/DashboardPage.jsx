@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Navbar from '../components/ui-components/Navbar';
 import PurchaseOrderTable from '../components/ui-components/PurchaseOrderTable';
 import StatsCard from '../components/ui-components/StatsCard';
@@ -14,25 +15,74 @@ import {
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Separator } from "../components/ui/separator";
+import LoadingSpinner from '../components/ui-components/LoadingSpinner';
+import ErrorAlert from '../components/ui-components/ErrorAlert';
+import { fetchDashboardData } from '../api/dashboardApi';
 
 /**
  * Dashboard page component showing overview of purchase management system
  * @returns {JSX.Element} Dashboard page component
  */
 const DashboardPage = () => {
+  // Fetch dashboard data using React Query
+  const { 
+    data: dashboardData,
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ['dashboardData'],
+    queryFn: fetchDashboardData,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  });
+
   useEffect(() => {
     document.title = "Tableau de bord - EnterpriseFlow";
   }, []);
 
   // Animation for stats cards to appear with stagger effect
   useEffect(() => {
-    const statsCards = document.querySelectorAll('.stats-card');
-    statsCards.forEach((card, index) => {
-      setTimeout(() => {
-        card.classList.add('animate-fade-in');
-      }, 100 * index);
-    });
-  }, []);
+    if (!isLoading && !isError) {
+      const statsCards = document.querySelectorAll('.stats-card');
+      statsCards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('animate-fade-in');
+        }, 100 * index);
+      });
+    }
+  }, [isLoading, isError]);
+
+  // If data is loading, show loading spinner
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex items-center justify-center">
+          <LoadingSpinner size="lg" text="Chargement des données du tableau de bord..." />
+        </main>
+      </div>
+    );
+  }
+
+  // If there's an error, show error message
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <ErrorAlert 
+            title="Erreur de chargement" 
+            message={error?.message || "Impossible de charger les données du tableau de bord."} 
+            onRetry={refetch}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  // Extract data for easier access
+  const { requestStats, orderStats } = dashboardData;
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,38 +117,38 @@ const DashboardPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatsCard 
                 title="Demandes d'achat" 
-                value="43"
-                trend="+12%"
-                trendLabel="ce mois"
+                value={requestStats.total.toString()}
+                trend={`${requestStats.pending > 0 ? requestStats.pending : 0} en attente`}
+                trendLabel="à traiter"
                 icon={<ShoppingCart className="h-4 w-4 text-primary" />}
-                trendUp={true}
-                className="stats-card opacity-0"
-              />
-              
-              <StatsCard 
-                title="Commandes en cours" 
-                value="18"
-                progress={42}
-                trendLabel="du budget trimestriel"
-                icon={<CreditCard className="h-4 w-4 text-primary" />}
-                className="stats-card opacity-0"
-              />
-              
-              <StatsCard 
-                title="Matériaux en stock faible" 
-                value="7"
-                trend="Critique"
-                trendLabel="nécessite attention"
-                icon={<Package className="h-4 w-4 text-primary" />}
                 trendUp={false}
                 className="stats-card opacity-0"
               />
               
               <StatsCard 
-                title="Livraisons du mois" 
-                value="24"
-                trend="92%"
-                trendLabel="dans les délais"
+                title="Commandes en cours" 
+                value={orderStats.inProgress.toString()}
+                progress={Math.round((orderStats.inProgress / orderStats.total) * 100) || 0}
+                trendLabel="du total des commandes"
+                icon={<CreditCard className="h-4 w-4 text-primary" />}
+                className="stats-card opacity-0"
+              />
+              
+              <StatsCard 
+                title="Taux d'approbation" 
+                value={`${Math.round((requestStats.approved / requestStats.total) * 100) || 0}%`}
+                trend={requestStats.approved > 0 ? `${requestStats.approved} demandes` : "0 demande"}
+                trendLabel="approuvées"
+                icon={<Package className="h-4 w-4 text-primary" />}
+                trendUp={true}
+                className="stats-card opacity-0"
+              />
+              
+              <StatsCard 
+                title="Livraisons" 
+                value={orderStats.delivered.toString()}
+                trend={`${Math.round((orderStats.delivered / orderStats.total) * 100) || 0}%`}
+                trendLabel="du total des commandes"
                 icon={<TrendingUp className="h-4 w-4 text-primary" />}
                 trendUp={true}
                 className="stats-card opacity-0"
@@ -110,7 +160,7 @@ const DashboardPage = () => {
                 <CardTitle>Commandes récentes</CardTitle>
               </CardHeader>
               <CardContent>
-                <PurchaseOrderTable />
+                <PurchaseOrderTable orders={dashboardData.recentOrders} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -121,7 +171,7 @@ const DashboardPage = () => {
                 <CardTitle>Toutes les commandes</CardTitle>
               </CardHeader>
               <CardContent>
-                <PurchaseOrderTable />
+                <PurchaseOrderTable orders={dashboardData.recentOrders} showAll={true} />
               </CardContent>
             </Card>
           </TabsContent>

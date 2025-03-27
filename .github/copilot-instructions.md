@@ -79,255 +79,6 @@ This React application serves as the frontend for an enterprise equipment purcha
 - Maintain sufficient color contrast
 - Implement proper focus management
 
-## Project-Specific Guidelines
-
-### Data Models and JSDoc Type Definitions
-
-#### Enums
-```javascript
-/**
- * @typedef {'logistique'|'daf'} UserRole
- * @typedef {'pending'|'approved'|'rejected'|'ordered'|'delivered'|'closed'} RequestStatus
- * @typedef {'approved'|'rejected'|'pending_info'} ApprovalDecision
- * @typedef {'prepared'|'shipped'|'delivered'} TrackingStatus
- */
-```
-
-#### Users
-```javascript
-/**
- * @typedef {Object} User
- * @property {number} user_id
- * @property {string} username
- * @property {string} [first_name]
- * @property {string} [last_name]
- * @property {string} [cin]
- * @property {string} [phone]
- * @property {UserRole} role
- * @property {string} email
- */
-```
-
-#### Suppliers
-```javascript
-/**
- * @typedef {Object} Supplier
- * @property {number} supplier_id
- * @property {string} supplier_name
- * @property {string} [supplier_description]
- * @property {string} [supplier_email]
- */
-```
-
-#### Materials
-```javascript
-/**
- * @typedef {Object} Material
- * @property {number} material_id
- * @property {string} name
- * @property {string} category
- * @property {number} unit_price
- * @property {number} supplier_id
- * @property {number} stock_available
- */
-```
-
-#### PurchaseRequests
-```javascript
-/**
- * @typedef {Object} PurchaseRequest
- * @property {number} request_id
- * @property {number} user_id
- * @property {string} created_at
- * @property {RequestStatus} status
- * @property {string} justification
- */
-```
-
-#### RequestItems
-```javascript
-/**
- * @typedef {Object} RequestItem
- * @property {number} request_item_id
- * @property {number} request_id
- * @property {number} material_id
- * @property {number} quantity
- * @property {number} estimated_cost
- */
-```
-
-#### Approvals
-```javascript
-/**
- * @typedef {Object} Approval
- * @property {number} approval_id
- * @property {number} request_id
- * @property {number} daf_user_id
- * @property {ApprovalDecision} decision
- * @property {string} [comment]
- * @property {string} [approved_at]
- */
-```
-
-#### Orders
-```javascript
-/**
- * @typedef {Object} Order
- * @property {number} order_id
- * @property {number} request_id
- * @property {number} supplier_id
- * @property {string} order_number
- * @property {TrackingStatus} tracking_status
- * @property {string} ordered_at
- * @property {string} [delivered_at]
- */
-```
-
-#### OrderItems
-```javascript
-/**
- * @typedef {Object} OrderItem
- * @property {number} order_item_id
- * @property {number} order_id
- * @property {number} material_id
- * @property {number} quantity
- * @property {number} actual_cost
- */
-```
-
-### Extended/Combined Models (for UI display)
-
-```javascript
-/**
- * @typedef {Object} MaterialWithSupplier
- * @property {number} material_id
- * @property {string} name
- * @property {string} category
- * @property {number} unit_price
- * @property {number} supplier_id
- * @property {number} stock_available
- * @property {string} supplier_name
- */
-
-/**
- * @typedef {Object} RequestItemWithDetails
- * @property {number} request_item_id
- * @property {number} request_id
- * @property {number} material_id
- * @property {number} quantity
- * @property {number} estimated_cost
- * @property {string} material_name
- * @property {string} material_category
- * @property {number} unit_price
- */
-
-/**
- * @typedef {Object} PurchaseRequestWithDetails
- * @property {number} request_id
- * @property {number} user_id
- * @property {string} created_at
- * @property {RequestStatus} status
- * @property {string} justification
- * @property {string} requester_name
- * @property {Array<RequestItemWithDetails>} items
- * @property {number} total_estimated_cost
- * @property {Approval} [approval]
- */
-
-/**
- * @typedef {Object} OrderItemWithMaterial
- * @property {number} order_item_id
- * @property {number} order_id
- * @property {number} material_id
- * @property {number} quantity
- * @property {number} actual_cost
- * @property {string} material_name
- * @property {string} material_category
- */
-
-/**
- * @typedef {Object} OrderWithDetails
- * @property {number} order_id
- * @property {number} request_id
- * @property {number} supplier_id
- * @property {string} order_number
- * @property {TrackingStatus} tracking_status
- * @property {string} ordered_at
- * @property {string} [delivered_at]
- * @property {string} request_justification
- * @property {string} supplier_name
- * @property {Array<OrderItemWithMaterial>} items
- * @property {number} total_actual_cost
- */
-```
-
-### API Endpoints
-
-All API endpoints should be prefixed with `/api/v1`.
-
-#### Authentication & User Management
-- POST `/api/v1/auth/login` - Authenticate a user and get JWT token
-- GET `/api/v1/auth/logout` - Logout a user (invalidate token)
-- GET `/api/v1/auth/check-user` - Verify current user from token
-- POST `/api/v1/users/register` - Register a new account
-
-#### Users
-- GET `/api/v1/users` - Get all users
-- GET `/api/v1/users/:id` - Get a specific user
-- POST `/api/v1/users` - Create a new user
-- PUT `/api/v1/users/:id` - Update a user
-- DELETE `/api/v1/users/:id` - Delete a user
-
-#### Suppliers
-- GET `/api/v1/suppliers` - Get all suppliers
-- GET `/api/v1/suppliers/:id` - Get a specific supplier
-- POST `/api/v1/suppliers` - Create a new supplier
-- PUT `/api/v1/suppliers/:id` - Update a supplier
-- DELETE `/api/v1/suppliers/:id` - Delete a supplier
-
-#### Materials
-- GET `/api/v1/materials` - Get all materials
-- GET `/api/v1/materials/:id` - Get a specific material
-- POST `/api/v1/materials` - Create a new material
-- PUT `/api/v1/materials/:id` - Update a material
-- DELETE `/api/v1/materials/:id` - Delete a material
-- GET `/api/v1/materials/supplier/:supplierId` - Get materials by supplier
-
-#### Purchase Requests
-- GET `/api/v1/requests` - Get all purchase requests
-- GET `/api/v1/requests/:id` - Get a specific purchase request with items
-- POST `/api/v1/requests` - Create a new purchase request
-- PUT `/api/v1/requests/:id` - Update a purchase request
-- DELETE `/api/v1/requests/:id` - Delete a purchase request
-- GET `/api/v1/requests/user/:userId` - Get requests by user
-- GET `/api/v1/requests/status/:status` - Get requests by status
-
-#### Request Items
-- GET `/api/v1/request-items/request/:requestId` - Get items for a request
-- POST `/api/v1/request-items` - Add an item to a request
-- PUT `/api/v1/request-items/:id` - Update a request item
-- DELETE `/api/v1/request-items/:id` - Remove an item from a request
-
-#### Approvals
-- GET `/api/v1/approvals/request/:requestId` - Get approval for a request
-- POST `/api/v1/approvals` - Create a new approval
-- PUT `/api/v1/approvals/:id` - Update an approval
-
-#### Orders
-- GET `/api/v1/orders` - Get all orders
-- GET `/api/v1/orders/:id` - Get a specific order with items
-- POST `/api/v1/orders` - Create a new order
-- PUT `/api/v1/orders/:id` - Update an order
-- DELETE `/api/v1/orders/:id` - Delete an order
-- GET `/api/v1/orders/supplier/:supplierId` - Get orders by supplier
-- GET `/api/v1/orders/status/:status` - Get orders by status
-
-#### Order Items
-- GET `/api/v1/order-items/order/:orderId` - Get items for an order
-- POST `/api/v1/order-items` - Add an item to an order
-- PUT `/api/v1/order-items/:id` - Update an order item
-- DELETE `/api/v1/order-items/:id` - Remove an item from an order
-
 ### Common UI Patterns
 - Use Badge component for status indicators
 - Follow the established date format (fr locale)
@@ -392,301 +143,116 @@ All API endpoints should be prefixed with `/api/v1`.
 - Cache responses to reduce API calls
 - Invalidate queries appropriately when mutations occur
 
-## API Response Structure
+## API Endpoints
 
-All API responses should follow a consistent structure:
+### Authentication
+- `POST /api/v1/auth/check-user`: Checks if the user exists in the database. Requires a valid JWT token.
 
-```javascript
-/**
- * @template T
- * @typedef {Object} ApiResponse
- * @property {boolean} success
- * @property {T} [data]
- * @property {Object} [error]
- * @property {string} [error.code]
- * @property {string} [error.message]
- * @property {any} [error.details]
- * @property {Object} [pagination]
- * @property {number} [pagination.page]
- * @property {number} [pagination.limit]
- * @property {number} [pagination.total]
- * @property {number} [pagination.totalPages]
- */
-```
+### Suppliers
+- `GET /api/v1/suppliers`: Retrieves a list of all suppliers. Requires a valid JWT token.
+- `POST /api/v1/suppliers`: Creates a new supplier. Requires a valid JWT token and 'logistique' role.
 
-## HTTP Error Handling
+### Materials
+- `GET /api/v1/materials`: Retrieves a paginated list of materials. Requires a valid JWT token.
+- `POST /api/v1/materials`: Creates a new material. Requires a valid JWT token and 'logistique' role.
+- `PUT /api/v1/materials/{material_id}`: Updates a material by ID. Requires a valid JWT token and 'logistique' role.
+- `DELETE /api/v1/materials/{material_id}`: Deletes a material by ID. Requires a valid JWT token and 'logistique' role.
 
-Map HTTP status codes to appropriate user-friendly messages:
-- 400: Bad Request - "Les données fournies sont invalides"
-- 401: Unauthorized - "Vous devez vous connecter pour accéder à cette ressource"
-- 403: Forbidden - "Vous n'avez pas les permissions nécessaires"
-- 404: Not Found - "La ressource demandée n'existe pas"
-- 500: Server Error - "Une erreur serveur est survenue, veuillez réessayer"
+### Users
+- `POST /api/v1/users/register`: Registers a new user.
 
-## API Usage Guidelines
+### Purchase Requests
+- `POST /api/v1/purchase-requests`: Creates a new purchase request. Requires a valid JWT token and 'logistique' role.
+- `GET /api/v1/purchase-requests/{request_id}`: Retrieves a purchase request by ID. Requires a valid JWT token.
+- `GET /api/v1/purchase-requests`: Lists purchase requests, optionally filtered by status. Requires a valid JWT token.
+- `PUT /api/v1/purchase-requests/{request_id}`: Updates a purchase request by ID. Requires a valid JWT token.
 
-All authenticated endpoints require a JWT token in the request body. The token should be included as follows:
+### Approvals
+- `POST /api/v1/approvals`: Creates a new approval for a purchase request. Requires a valid JWT token and 'daf' role.
+- `GET /api/v1/approvals/{approval_id}`: Retrieves an approval by ID. Requires a valid JWT token.
+- `GET /api/v1/purchase-requests/{request_id}/approval`: Retrieves the approval for a specific purchase request. Requires a valid JWT token.
 
-```javascript
-{
-  "token": "your_jwt_token"
-}
-```
+### Orders
+- `POST /api/v1/orders`: Creates a new order. Requires a valid JWT token and 'logistique' role.
+- `GET /api/v1/orders/{order_id}`: Retrieves an order by ID. Requires a valid JWT token.
+- `GET /api/v1/orders`: Lists orders, optionally filtered by tracking status or supplier. Requires a valid JWT token.
+- `PUT /api/v1/orders/{order_id}`: Updates an order by ID. Requires a valid JWT token and 'logistique' role.
+- `GET /api/v1/orders/by-request/{request_id}`: Retrieves the order associated with a specific purchase request. Requires a valid JWT token.
 
-### Authentication Endpoints
+## Database Schema
 
-#### User Registration (POST `/api/v1/users/register`)
+### Custom Types
+- `user_role`: ENUM('logistique', 'daf')
+- `request_status`: ENUM('pending', 'approved', 'rejected', 'ordered', 'delivered', 'closed')
+- `approval_decision`: ENUM('approved', 'rejected', 'pending_info')
+- `tracking_status`: ENUM('prepared', 'shipped', 'delivered')
 
-**Request Format:**
-```javascript
-{
-  "username": "jean_dupont",
-  "first_name": "Jean",
-  "last_name": "Dupont",
-  "cin": "FR123456789",
-  "phone": "+33612345678",
-  "role": "logistique",  // Must be 'logistique' or 'daf'
-  "email": "jean.dupont@example.com"
-}
-```
+### Users
+Represents the actors: Logistics Manager, Finance Director, and Supplier.
+- `user_id`: SERIAL [Primary Key]
+- `username`: VARCHAR(50) [NOT NULL]
+- `first_name`: VARCHAR(50)
+- `last_name`: VARCHAR(50)
+- `cin`: VARCHAR(12)
+- `phone`: VARCHAR(10)
+- `role`: user_role [NOT NULL]
+- `email`: VARCHAR(100) [NOT NULL]
 
-**Response Format:**
-```javascript
-{
-  "exists": true,
-  "user_data": {
-    "user_id": 1,
-    "username": "jean_dupont",
-    "first_name": "Jean",
-    "last_name": "Dupont",
-    "cin": "FR123456789",
-    "phone": "+33612345678",
-    "role": "logistique",
-    "email": "jean.dupont@example.com"
-  }
-}
-```
+### Suppliers
+Represents the suppliers providing materials.
+- `supplier_id`: SERIAL [Primary Key]
+- `supplier_name`: VARCHAR(100) [NOT NULL]
+- `supplier_description`: VARCHAR(255)
+- `supplier_email`: VARCHAR(100)
 
-**Common Errors:**
-- 400: Invalid role or missing fields
-- 409: Email or username already exists
+### Materials
+Lists the available materials or those referenced for purchases (e.g., internal catalog).
+- `material_id`: SERIAL [Primary Key]
+- `name`: VARCHAR(100) [NOT NULL]
+- `category`: VARCHAR(50) [NOT NULL]
+- `unit_price`: DECIMAL(10,2) [NOT NULL]
+- `supplier_id`: INT [Foreign Key -> Suppliers.supplier_id, NOT NULL]
+- `stock_available`: INT [NOT NULL]
 
-#### Verify User (POST `/api/v1/auth/check-user`)
+### PurchaseRequests
+Represents the requests submitted by the Logistics Manager.
+- `request_id`: SERIAL [Primary Key]
+- `user_id`: INT [Foreign Key -> Users.user_id, NOT NULL]
+- `created_at`: TIMESTAMP WITH TIME ZONE [NOT NULL]
+- `status`: request_status [NOT NULL]
+- `justification`: TEXT [NOT NULL]
 
-**Request Format:**
-```javascript
-{
-  "token": "your_jwt_token"
-}
-```
+### RequestItems
+Links purchase requests with requested materials (allows multiple items per request).
+- `request_item_id`: SERIAL [Primary Key]
+- `request_id`: INT [Foreign Key -> PurchaseRequests.request_id, NOT NULL]
+- `material_id`: INT [Foreign Key -> Materials.material_id, NOT NULL]
+- `quantity`: INT [NOT NULL]
+- `estimated_cost`: DECIMAL(10,2) [NOT NULL]
 
-**Response Format:**
-```javascript
-{
-  "exists": true,
-  "user_data": {
-    "user_id": 1,
-    "username": "jean_dupont",
-    "first_name": "Jean",
-    "last_name": "Dupont",
-    "cin": "FR123456789",
-    "phone": "+33612345678",
-    "role": "logistique",
-    "email": "jean.dupont@example.com"
-  }
-}
-```
+### Approvals
+Records the decisions of the Financial Director (DAF).
+- `approval_id`: SERIAL [Primary Key]
+- `request_id`: INT [Foreign Key -> PurchaseRequests.request_id, NOT NULL]
+- `daf_user_id`: INT [Foreign Key -> Users.user_id, NOT NULL]
+- `decision`: approval_decision [NOT NULL]
+- `comment`: TEXT
+- `approved_at`: TIMESTAMP WITH TIME ZONE
 
-**Common Errors:**
-- 401: Invalid token
-- 500: Database error
+### Orders
+Represents orders placed with suppliers.
+- `order_id`: SERIAL [Primary Key]
+- `request_id`: INT [Foreign Key -> PurchaseRequests.request_id, NOT NULL]
+- `supplier_id`: INT [Foreign Key -> Suppliers.supplier_id, NOT NULL]
+- `order_number`: VARCHAR(50) [NOT NULL]
+- `tracking_status`: tracking_status [NOT NULL]
+- `ordered_at`: TIMESTAMP WITH TIME ZONE [NOT NULL]
+- `delivered_at`: TIMESTAMP WITH TIME ZONE
 
-### Suppliers Endpoints
-
-#### Get All Suppliers (GET `/api/v1/suppliers`)
-
-**Request Format:**
-```javascript
-{
-  "token": "your_jwt_token"
-}
-```
-
-**Response Format:**
-```javascript
-[
-  {
-    "supplier_id": 1,
-    "supplier_name": "Fournisseur A",
-    "supplier_description": "Description du fournisseur A",
-    "supplier_email": "contact@fournisseura.com"
-  },
-  // More suppliers...
-]
-```
-
-**Common Errors:**
-- 401: Authentication failed
-- 500: Database error
-
-### Materials Endpoints
-
-#### Get Materials with Pagination (GET `/api/v1/materials`)
-
-**Request Format:**
-```javascript
-{
-  "token": "your_jwt_token"
-}
-```
-
-**Query Parameters:**
-- `page`: Page number (default: 1)
-- `page_size`: Items per page (default: 10)
-
-**Response Format:**
-```javascript
-{
-  "data": [
-    {
-      "material_id": 1,
-      "name": "Écran Dell 24\"",
-      "category": "Informatique",
-      "unit_price": 199.99,
-      "supplier_id": 1,
-      "stock_available": 50
-    },
-    // More materials...
-  ],
-  "total_count": 100,
-  "page": 1,
-  "page_size": 10,
-  "total_pages": 10
-}
-```
-
-**Common Errors:**
-- 400: Invalid pagination parameters
-- 401: Authentication failed
-- 500: Database error
-
-#### Update Material (PUT `/api/v1/materials/{material_id}`)
-
-**Request Format:**
-```javascript
-{
-  "token": "your_jwt_token",
-  "name": "Écran Dell 27\"",  // Optional
-  "category": "Informatique", // Optional
-  "unit_price": 249.99,       // Optional
-  "supplier_id": 1,           // Optional
-  "stock_available": 45       // Optional
-}
-```
-
-**Response Format:**
-```javascript
-{
-  "material_id": 1,
-  "name": "Écran Dell 27\"",
-  "category": "Informatique",
-  "unit_price": 249.99,
-  "supplier_id": 1,
-  "stock_available": 45
-}
-```
-
-**Common Errors:**
-- 400: No update data provided
-- 401: Authentication failed
-- 403: User doesn't have 'logistique' role
-- 404: Material not found
-- 500: Database error
-
-#### Delete Material (DELETE `/api/v1/materials/{material_id}`)
-
-**Request Format:**
-```javascript
-{
-  "token": "your_jwt_token"
-}
-```
-
-**Response Format:**
-```javascript
-{
-  "message": "Material with ID 1 successfully deleted"
-}
-```
-
-**Common Errors:**
-- 401: Authentication failed
-- 403: User doesn't have 'logistique' role
-- 404: Material not found
-- 409: Material is referenced in requests or orders
-- 500: Database error
-
-### Usage Example in Frontend
-
-Here's an example of how to call the API from the frontend using React Query:
-
-```javascript
-import { useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-// Get all suppliers
-const useSuppliers = () => {
-  const token = localStorage.getItem('jwt_token');
-  
-  return useQuery({
-    queryKey: ['suppliers'],
-    queryFn: async () => {
-      const response = await axios.get('/api/v1/suppliers', {
-        data: { token }
-      });
-      return response.data;
-    },
-    onError: (error) => {
-      console.error('Failed to fetch suppliers:', error);
-      // Handle error state
-    }
-  });
-};
-
-// Update a material
-const useUpdateMaterial = () => {
-  const token = localStorage.getItem('jwt_token');
-  
-  return useMutation({
-    mutationFn: async ({ materialId, updateData }) => {
-      const payload = { token, ...updateData };
-      const response = await axios.put(`/api/v1/materials/${materialId}`, payload);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      // Handle success state
-      console.log('Material updated successfully:', data);
-    },
-    onError: (error) => {
-      // Handle error state
-      console.error('Failed to update material:', error);
-    }
-  });
-};
-```
-
-## Implementation Tips:
-
-1. **Token Handling**: Always include the JWT token in the request body for authenticated endpoints
-2. **Error Handling**: Use try/catch blocks and handle specific HTTP status codes
-3. **Request Validation**: Validate data before sending to the API
-4. **Response Processing**: Check for proper response format before using the data
-5. **Authentication Flow**: Verify user authentication status on application load
-
-## Security Considerations:
-
-1. Never log or expose the JWT token in client-side code
-2. Use HTTPS for all API communications
-3. Implement proper token expiration and refresh mechanisms
-4. Validate all user input before sending to the API
-5. Handle unauthorized responses by redirecting to the login page
+### OrderItems
+Details the materials ordered in each order.
+- `order_item_id`: SERIAL [Primary Key]
+- `order_id`: INT [Foreign Key -> Orders.order_id, NOT NULL]
+- `material_id`: INT [Foreign Key -> Materials.material_id, NOT NULL]
+- `quantity`: INT [NOT NULL]
+- `actual_cost`: DECIMAL(10,2) [NOT NULL]
