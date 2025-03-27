@@ -6,8 +6,8 @@ import { BASE_API_URL, API_ENDPOINTS } from '../constants/api';
  * @returns {Promise<Object>} Orders and requests data
  */
 export const fetchOrdersAndRequests = async () => {
-  // Use token from localStorage in production
-  const token = localStorage.getItem('token') || "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDI2MjE4NTg4MjQ0ODgxMDU3MjYiLCJlbWFpbCI6InJha290b21hbmRpbWJ5LmxvaWNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjkwMjg5MSwibmFtZSI6Ikxvw69jIFJBS09UT01BTkRJTUJZIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0pIRElKdGE4X0VlV0Q1MHpvbUZKTU9tUm1SZHRfMTF6Vi1iek1DbTlCSE43bVZFemh1PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6Ikxvw69jIiwiZmFtaWx5X25hbWUiOiJSQUtPVE9NQU5ESU1CWSIsImlhdCI6MTc0MjkwMzE5MSwiZXhwIjoxNzQyOTA2NzkxLCJqdGkiOiI4MzA2YmE3ZjI1NmY2NjAxYTJjNzRhOTkyNDk1MDM4MjdhNDE3MDFjIn0.pCh6MkdwXUdwUzdlPbQZ0arOyusYHwC7gYTGe8wnlUr4JX4yfjG_e1XtMKS2aHYNa9GwltKTgj8wDZCJNld_o2hCD2FOuZKFmsgJQIxMFUxwD3nJ8Z2xJkq_5fDyEbj3tFJ4JNRD5uwtCm5ZcmC3CGQ3r78RZqLO131fKXIXKGAhDcLqJcQV3Wpj49m2Cf9H3wdZ6pmf-_986M44v-e_zFkdq4XTcTqq5DeyJ-VrtI9JIKwuz31V0ujQcfMh1CK61kfVBfzoBskX4ltGxFKYVfumqA1nvMYjYO1EHXmc9Tr5-SQNtaCZo9R5WDNbQqEx9LJB1nGqGKeL7qlza8xIug";
+  // Use token from localStorage
+  const token = localStorage.getItem('token');
   
   try {
     if (!token) {
@@ -83,8 +83,7 @@ export const fetchOrdersAndRequests = async () => {
  * @returns {Promise<Object>} Material data
  */
 export const fetchMaterialDetails = async (materialId) => {
-//   const token = localStorage.getItem('token');
-    const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDI2MjE4NTg4MjQ0ODgxMDU3MjYiLCJlbWFpbCI6InJha290b21hbmRpbWJ5LmxvaWNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjkwMjg5MSwibmFtZSI6Ikxvw69jIFJBS09UT01BTkRJTUJZIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0pIRElKdGE4X0VlV0Q1MHpvbUZKTU9tUm1SZHRfMTF6Vi1iek1DbTlCSE43bVZFemh1PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6Ikxvw69jIiwiZmFtaWx5X25hbWUiOiJSQUtPVE9NQU5ESU1CWSIsImlhdCI6MTc0MjkwMzE5MSwiZXhwIjoxNzQyOTA2NzkxLCJqdGkiOiI4MzA2YmE3ZjI1NmY2NjAxYTJjNzRhOTkyNDk1MDM4MjdhNDE3MDFjIn0.pCh6MkdwXUdwUzdlPbQZ0arOyusYHwC7gYTGe8wnlUr4JX4yfjG_e1XtMKS2aHYNa9GwltKTgj8wDZCJNld_o2hCD2FOuZKFmsgJQIxMFUxwD3nJ8Z2xJkq_5fDyEbj3tFJ4JNRD5uwtCm5ZcmC3CGQ3r78RZqLO131fKXIXKGAhDcLqJcQV3Wpj49m2Cf9H3wdZ6pmf-_986M44v-e_zFkdq4XTcTqq5DeyJ-VrtI9JIKwuz31V0ujQcfMh1CK61kfVBfzoBskX4ltGxFKYVfumqA1nvMYjYO1EHXmc9Tr5-SQNtaCZo9R5WDNbQqEx9LJB1nGqGKeL7qlza8xIug";
+  const token = localStorage.getItem('token');
   
   try {
     if (!token) {
@@ -109,8 +108,7 @@ export const fetchMaterialDetails = async (materialId) => {
  * @returns {Promise<Array>} Request items with calculated estimated costs
  */
 export const calculateRequestItemsCost = async (requestItems) => {
-//   const token = localStorage.getItem('token');
-const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDI2MjE4NTg4MjQ0ODgxMDU3MjYiLCJlbWFpbCI6InJha290b21hbmRpbWJ5LmxvaWNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjkwMjg5MSwibmFtZSI6Ikxvw69jIFJBS09UT01BTkRJTUJZIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0pIRElKdGE4X0VlV0Q1MHpvbUZKTU9tUm1SZHRfMTF6Vi1iek1DbTlCSE43bVZFemh1PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6Ikxvw69jIiwiZmFtaWx5X25hbWUiOiJSQUtPVE9NQU5ESU1CWSIsImlhdCI6MTc0MjkwMzE5MSwiZXhwIjoxNzQyOTA2NzkxLCJqdGkiOiI4MzA2YmE3ZjI1NmY2NjAxYTJjNzRhOTkyNDk1MDM4MjdhNDE3MDFjIn0.pCh6MkdwXUdwUzdlPbQZ0arOyusYHwC7gYTGe8wnlUr4JX4yfjG_e1XtMKS2aHYNa9GwltKTgj8wDZCJNld_o2hCD2FOuZKFmsgJQIxMFUxwD3nJ8Z2xJkq_5fDyEbj3tFJ4JNRD5uwtCm5ZcmC3CGQ3r78RZqLO131fKXIXKGAhDcLqJcQV3Wpj49m2Cf9H3wdZ6pmf-_986M44v-e_zFkdq4XTcTqq5DeyJ-VrtI9JIKwuz31V0ujQcfMh1CK61kfVBfzoBskX4ltGxFKYVfumqA1nvMYjYO1EHXmc9Tr5-SQNtaCZo9R5WDNbQqEx9LJB1nGqGKeL7qlza8xIug";
+  const token = localStorage.getItem('token');
   
   if (!token) {
     throw new Error('No authentication token found');
@@ -153,8 +151,7 @@ const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiN
  * @returns {Promise<Object>} Purchase request data with items and totals
  */
 export const fetchRequestDetails = async (requestId) => {
-//   const token = localStorage.getItem('token');
-    const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDI2MjE4NTg4MjQ0ODgxMDU3MjYiLCJlbWFpbCI6InJha290b21hbmRpbWJ5LmxvaWNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjkwMjg5MSwibmFtZSI6Ikxvw69jIFJBS09UT01BTkRJTUJZIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0pIRElKdGE4X0VlV0Q1MHpvbUZKTU9tUm1SZHRfMTF6Vi1iek1DbTlCSE43bVZFemh1PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6Ikxvw69jIiwiZmFtaWx5X25hbWUiOiJSQUtPVE9NQU5ESU1CWSIsImlhdCI6MTc0MjkwMzE5MSwiZXhwIjoxNzQyOTA2NzkxLCJqdGkiOiI4MzA2YmE3ZjI1NmY2NjAxYTJjNzRhOTkyNDk1MDM4MjdhNDE3MDFjIn0.pCh6MkdwXUdwUzdlPbQZ0arOyusYHwC7gYTGe8wnlUr4JX4yfjG_e1XtMKS2aHYNa9GwltKTgj8wDZCJNld_o2hCD2FOuZKFmsgJQIxMFUxwD3nJ8Z2xJkq_5fDyEbj3tFJ4JNRD5uwtCm5ZcmC3CGQ3r78RZqLO131fKXIXKGAhDcLqJcQV3Wpj49m2Cf9H3wdZ6pmf-_986M44v-e_zFkdq4XTcTqq5DeyJ-VrtI9JIKwuz31V0ujQcfMh1CK61kfVBfzoBskX4ltGxFKYVfumqA1nvMYjYO1EHXmc9Tr5-SQNtaCZo9R5WDNbQqEx9LJB1nGqGKeL7qlza8xIug";
+  const token = localStorage.getItem('token');
   
   try {
     if (!token) {
@@ -208,8 +205,7 @@ export const fetchRequestDetails = async (requestId) => {
  * @returns {Promise<Object>} Order data with items and related information
  */
 export const fetchOrderDetails = async (orderId) => {
-//   const token = localStorage.getItem('token')
-    const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4NjEyMjAyNDE0MDctOWswMmMzMzVmNmRqdHY1cXJodjJlaDJ1ZW9pNjd1YTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDI2MjE4NTg4MjQ0ODgxMDU3MjYiLCJlbWFpbCI6InJha290b21hbmRpbWJ5LmxvaWNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjkwMjg5MSwibmFtZSI6Ikxvw69jIFJBS09UT01BTkRJTUJZIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0pIRElKdGE4X0VlV0Q1MHpvbUZKTU9tUm1SZHRfMTF6Vi1iek1DbTlCSE43bVZFemh1PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6Ikxvw69jIiwiZmFtaWx5X25hbWUiOiJSQUtPVE9NQU5ESU1CWSIsImlhdCI6MTc0MjkwMzE5MSwiZXhwIjoxNzQyOTA2NzkxLCJqdGkiOiI4MzA2YmE3ZjI1NmY2NjAxYTJjNzRhOTkyNDk1MDM4MjdhNDE3MDFjIn0.pCh6MkdwXUdwUzdlPbQZ0arOyusYHwC7gYTGe8wnlUr4JX4yfjG_e1XtMKS2aHYNa9GwltKTgj8wDZCJNld_o2hCD2FOuZKFmsgJQIxMFUxwD3nJ8Z2xJkq_5fDyEbj3tFJ4JNRD5uwtCm5ZcmC3CGQ3r78RZqLO131fKXIXKGAhDcLqJcQV3Wpj49m2Cf9H3wdZ6pmf-_986M44v-e_zFkdq4XTcTqq5DeyJ-VrtI9JIKwuz31V0ujQcfMh1CK61kfVBfzoBskX4ltGxFKYVfumqA1nvMYjYO1EHXmc9Tr5-SQNtaCZo9R5WDNbQqEx9LJB1nGqGKeL7qlza8xIug";
+  const token = localStorage.getItem('token');
   
   try {
     if (!token) {
@@ -263,9 +259,6 @@ export const fetchOrderDetails = async (orderId) => {
     const itemsWithDetails = await Promise.all((orderItemsResponse.data || []).map(async (item) => {
       try {
         const materialDetails = await fetchMaterialDetails(item.material_id);
-        
-        // Log material details for debugging
-        console.debug(`Material details for ID ${item.material_id}:`, materialDetails);
         
         // Validate that unit_price exists and is a number
         let unitPrice = 0;

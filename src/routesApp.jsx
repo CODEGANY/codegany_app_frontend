@@ -8,6 +8,7 @@ import { Navigate } from "react-router-dom";
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import RequestDetailPage from './pages/RequestDetailPage';
+import NewRequestPage from './pages/NewRequestPage';
 
 
 const PrivateRoute = ({ children }) => {
@@ -62,6 +63,12 @@ return(
       <Route path="/orders/:id" element={
         <PrivateRoute>
           <OrderDetailPage />
+        </PrivateRoute>
+        } />
+
+      <Route path="/requests/new" element={
+        <PrivateRoute>
+          <NewRequestPage />
         </PrivateRoute>
         } />
 

@@ -7,10 +7,12 @@ import PurchaseRequestTable from '../components/ui-components/PurchaseRequestTab
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Separator } from "../components/ui/separator";
+import { Button } from "../components/ui/button";
 import LoadingSpinner from '../components/ui-components/LoadingSpinner';
 import ErrorAlert from '../components/ui-components/ErrorAlert';
 import { fetchOrdersAndRequests } from '../api/ordersApi';
-import { Package, FileText } from 'lucide-react';
+import { Package, FileText, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 /**
  * OrdersPage component showing lists of purchase requests and orders
@@ -97,8 +99,14 @@ const OrdersPage = () => {
           
           <TabsContent value="requests" className="animate-fade-in">
             <Card className="shadow-sm hover:shadow-md transition-all duration-300">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Demandes d'achat</CardTitle>
+                <Button asChild variant="default" size="sm" className="gap-1">
+                  <Link to="/requests/new">
+                    <Plus className="h-4 w-4" />
+                    Nouvelle demande
+                  </Link>
+                </Button>
               </CardHeader>
               <CardContent>
                 <PurchaseRequestTable requests={requests} showAll={true} />
