@@ -41,6 +41,7 @@ export const LoginSigninHooks = ()=>{
             toast.info('Utilisateur non inscrit');
             localStorage.removeItem('token');
           } else {
+            console.log(token);
             setUser({ token, ...response.user_data });
             toast.success('Connexion réussie');
             setTimeout(() => {

@@ -19,6 +19,8 @@ export const getInfoAboutTokenUser = async (token) => {
 export const sendRegistration = async (values) => {
     const API_URL = `${adress}/users/register`;
     try {
+      console.log(values);
+      
         const response = await axios.post(API_URL, { values }, {
             headers: {
               'Content-Type': 'application/json'
