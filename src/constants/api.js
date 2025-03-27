@@ -60,7 +60,6 @@ export const API_ENDPOINTS = {
     GET_ONE: (id) => `/api/v1/materials/${id}`,
     CREATE: '/api/v1/materials',
     UPDATE: (id) => `/api/v1/materials/${id}`,
-    DELETE: (id) => `/api/v1/materials/${id}`,
-    GET_BY_SUPPLIER: (supplierId) => `/api/v1/materials/supplier/${supplierId}`,
+    DELETE: (id) => `/api/v1/materials/${id}`
   },
 };

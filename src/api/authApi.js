@@ -1,36 +1,40 @@
 import axios from 'axios';
+import { BASE_API_URL, API_ENDPOINTS } from '../constants/api';
 
-const adress = 'https://d67f-66-9-179-193.ngrok-free.app/api/v1'
 export const getInfoAboutTokenUser = async (token) => {
-    const API_URL = `${adress}/auth/check-user`;
     try {
-        const response = await axios.post(API_URL, { token }, {
-            headers: {
-              'Content-Type': 'application/json'
+        const response = await axios.post(
+            `${BASE_API_URL}${API_ENDPOINTS.AUTH.CHECK_USER}`, 
+            { token }, 
+            {
+                headers: {
+                  'Content-Type': 'application/json'
+                }
             }
-          });
+        );
         return response.data;
-      } catch (error) {
+    } catch (error) {
         console.error('Erreur lors de l\'envoi du token au backend:', error);
         throw error; 
-      }
+    }
 };
 
 export const sendRegistration = async (values) => {
-    const API_URL = `${adress}/users/register`;
     try {
-      console.log(values);
-      
-        const response = await axios.post(API_URL, { values }, {
-            headers: {
-              'Content-Type': 'application/json'
+        const response = await axios.post(
+            `${BASE_API_URL}${API_ENDPOINTS.USERS.REGISTER}`, 
+            { values }, 
+            {
+                headers: {
+                  'Content-Type': 'application/json'
+                }
             }
-          });
+        );
         return response.data;
-      } catch (error) {
-        console.error('Erreur lors de l\'envoi du token au backend:', error);
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi des données d\'inscription au backend:', error);
         throw error; 
-      }
+    }
 };
 
 
