@@ -1,14 +1,53 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
 import LoginPage from './pages/LoginPage';
+import DashboardPage from "./pages/DashboardPage";
+import { AuthContext } from "./contexts/AuthContext";
+import { useContext } from "react";
+import { Navigate } from "react-router-dom";
+
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <div>Chargement...</div>; // Affiche un loader pendant la vérification (à revoir)
+  }
+  return user ? children : <Navigate to="/login" />;
+};
+
+// Route publique (pour utilisateurs non connectés)
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
+
+  return user ? <Navigate to="/dashboard" /> : children;
+};
 
 function Routes_app(){
+  const { loading } = useContext(AuthContext);
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
 return(
 <BrowserRouter>
     <Routes>
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+      />
+      <Route path="/dashboard" element={
+        <PrivateRoute>
+          <DashboardPage/>
+        </PrivateRoute>
+        } />
+
+      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
 );

@@ -1,7 +1,11 @@
-import { AuthHooks } from '../../hooks/AuthHooks';
+
+import { GoogleLogin } from '@react-oauth/google';
+import { LoginSigninHooks } from '@/hooks/LoginSigninHooks';
+import { toast } from 'sonner';
 
 const LogoutComponent = () => {
-  const { logout } = AuthHooks();
+
+  const { logout } = LoginSigninHooks();
 
   return (
     <button onClick={logout}>Déconnexion</button>
