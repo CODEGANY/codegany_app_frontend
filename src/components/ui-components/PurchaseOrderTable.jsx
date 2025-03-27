@@ -21,6 +21,64 @@ import { Link } from 'react-router-dom';
  * @property {number} total_actual_cost - Total order amount
  */
 
+const MOCK_ORDERS = [
+  {
+    order_id: 1,
+    request_id: 101,
+    supplier_id: 201,
+    order_number: 'CMD-2025-0342',
+    supplier_name: 'Fournitures Express',
+    tracking_status: 'delivered',
+    ordered_at: '2025-03-15T10:30:00',
+    delivered_at: '2025-03-20T14:20:00',
+    total_actual_cost: 12450.75
+  },
+  {
+    order_id: 2,
+    request_id: 102,
+    supplier_id: 202,
+    order_number: 'CMD-2025-0341',
+    supplier_name: 'Bureau Pro',
+    tracking_status: 'shipped',
+    ordered_at: '2025-03-10T14:20:00',
+    delivered_at: null,
+    total_actual_cost: 5670.25
+  },
+  {
+    order_id: 3,
+    request_id: 103,
+    supplier_id: 203,
+    order_number: 'CMD-2025-0340',
+    supplier_name: 'Équipements Industriels SA',
+    tracking_status: 'prepared',
+    ordered_at: '2025-03-05T09:15:00',
+    delivered_at: null,
+    total_actual_cost: 28940.50
+  },
+  {
+    order_id: 4,
+    request_id: 104,
+    supplier_id: 204,
+    order_number: 'CMD-2025-0339',
+    supplier_name: 'Matériel Tech',
+    tracking_status: 'delivered',
+    ordered_at: '2025-02-28T16:45:00',
+    delivered_at: '2025-03-04T11:30:00',
+    total_actual_cost: 3450.80
+  },
+  {
+    order_id: 5,
+    request_id: 105,
+    supplier_id: 205,
+    order_number: 'CMD-2025-0338',
+    supplier_name: 'Outillage Professionnel',
+    tracking_status: 'delivered',
+    ordered_at: '2025-02-25T11:10:00',
+    delivered_at: '2025-03-01T09:45:00',
+    total_actual_cost: 9875.30
+  }
+];
+
 /**
  * Returns the appropriate status badge for the order status
  * @param {TrackingStatus} status - The order tracking status
