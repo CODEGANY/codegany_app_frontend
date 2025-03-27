@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { sendGoogleTokenBack } from '../services/AuthService';
 
 /**
  * Custom hook for authentication functionality

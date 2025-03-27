@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import { useState, useEffect, createContext } from 'react';
 import RoutesApp from './routesApp';
+import { Toaster as Sonner } from "@/components/ui/sonner";
 
 // Create a React Query client
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={{ theme, toggleTheme }}>
         <AuthProvider>
+          <Sonner />
           <RoutesApp/>
         </AuthProvider>
       </ThemeContext.Provider>

@@ -1,15 +1,15 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { useAuth } from '../../hooks/AuthHooks';
+import { LoginSigninHooks } from '@/hooks/LoginSigninHooks';
+import { toast } from 'sonner';
 
 const LoginComponent = () => {
-  const { login } = useAuth();
+  const { handleGoogleLogin } = LoginSigninHooks();
 
   const handleSuccess = (response) => {
-    login(response.credential); // Stocke le token
+    handleGoogleLogin(response.credential); // Stocke le token
   };
-
   const handleError = () => {
-    console.log('Erreur lors de la connexion');
+    toast.error("Erreur lors de la connexion");
   };
 
   return (

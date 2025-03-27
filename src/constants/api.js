@@ -2,7 +2,7 @@
  * Base URL for all API requests
  * This can be easily switched between environments (dev, staging, prod)
  */
-export const BASE_API_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+export const BASE_API_URL = import.meta.env.VITE_API_BASE_URL || 'https://d67f-66-9-179-193.ngrok-free.app';
 
 /**
  * API endpoints
