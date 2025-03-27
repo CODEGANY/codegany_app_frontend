@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Navbar from '../components/ui-components/Navbar';
-import PurchaseOrderTable from '../components/ui-components/PurchaseOrderTable';
 import StatsCard from '../components/ui-components/StatsCard';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { ProductOrdersChart } from '../components/charts/ProductOrdersChart';
+import { ProductCostsChart } from '../components/charts/ProductCostsChart';
 import { 
   ArrowUpRight, 
   CreditCard, 
@@ -98,21 +98,6 @@ const DashboardPage = () => {
         </div>
         
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="mb-4 bg-muted/50 p-1">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Vue d'ensemble
-            </TabsTrigger>
-            <TabsTrigger value="orders" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Commandes
-            </TabsTrigger>
-            <TabsTrigger value="suppliers" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Fournisseurs
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Analyses
-            </TabsTrigger>
-          </TabsList>
-          
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatsCard 
@@ -154,63 +139,16 @@ const DashboardPage = () => {
                 className="stats-card opacity-0"
               />
             </div>
-            
-            <Card className="shadow-sm hover:shadow-md transition-all duration-300">
-              <CardHeader>
-                <CardTitle>Commandes récentes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <PurchaseOrderTable orders={dashboardData.recentOrders} />
-              </CardContent>
-            </Card>
+
+            <Separator className="my-2" />
           </TabsContent>
+           
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ProductOrdersChart />
+              
+              <ProductCostsChart />
+          </div>
           
-          <TabsContent value="orders" className="animate-fade-in">
-            <Card className="shadow-sm hover:shadow-md transition-all duration-300">
-              <CardHeader>
-                <CardTitle>Toutes les commandes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <PurchaseOrderTable orders={dashboardData.recentOrders} showAll={true} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="suppliers" className="animate-fade-in">
-            <Card className="shadow-sm hover:shadow-md transition-all duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <CardTitle>Gestion des fournisseurs</CardTitle>
-                <div className="px-3 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-full">
-                  En développement
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground space-y-3">
-                  <Activity className="h-12 w-12 mx-auto opacity-20" />
-                  <p>Module de gestion des fournisseurs en cours de développement.</p>
-                  <p className="text-sm">Disponible dans la prochaine mise à jour.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="analytics" className="animate-fade-in">
-            <Card className="shadow-sm hover:shadow-md transition-all duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <CardTitle>Analyses et rapports</CardTitle>
-                <div className="px-3 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-full">
-                  En développement
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground space-y-3">
-                  <Activity className="h-12 w-12 mx-auto opacity-20" />
-                  <p>Module d'analyses et rapports en cours de développement.</p>
-                  <p className="text-sm">Disponible dans la prochaine mise à jour.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </main>
     </div>
