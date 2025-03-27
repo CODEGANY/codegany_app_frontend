@@ -12,19 +12,14 @@ export const LoginSigninHooks = ()=>{
 
 
       const onLoginSubmit = (values) => {
-          console.log("Formulaire soumis avec succès :", values);
           toast.info("Connexion en cours");  
       };
 
       const onRegistrationSubmit = async (values) => {
           try {
             //Verification de l'utilisateur s'il existe déjà (email) a revoir
-
-            
-
             const response = await sendRegistration(values);
             toast.success("Inscription réussie");
-            console.log(response);
           } catch (error) {
             console.error('Erreur lors de la création du compte', error);
             toast.error('Erreur lors de la création du compte');
@@ -40,7 +35,7 @@ export const LoginSigninHooks = ()=>{
             toast.info('Utilisateur non inscrit');
             localStorage.removeItem('token');
           } else {
-            console.log(token);
+            
             setUser({ token, ...response.user_data });
             toast.success('Connexion réussie');
             setTimeout(() => {

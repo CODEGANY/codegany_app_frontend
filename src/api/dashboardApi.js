@@ -110,8 +110,6 @@ export const fetchDashboardData = async () => {
     if (!token) {
       throw new Error('No authentication token found');
     }
-
-    console.log("testetstse")
     
     // Fetch purchase requests (all statuses)
     const requestsResponse = await axios.get(`${BASE_API_URL}/api/v1/purchase-requests`, {
