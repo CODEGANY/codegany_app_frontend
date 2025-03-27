@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Separator } from '../components/ui/separator';
-import { ArrowLeft, Plus, Trash, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Trash, Save, Loader2 } from 'lucide-react';
 import LoadingSpinner from '../components/ui-components/LoadingSpinner';
 import ErrorAlert from '../components/ui-components/ErrorAlert';
 
@@ -96,10 +96,13 @@ const NewRequestPage = () => {
   // Filter materials by selected supplier
   const materials = React.useMemo(() => {
     if (!selectedSupplier) return [];
+    // Filter materials by supplier and exclude materials already in the request
     return allMaterials.filter(
-      material => material.supplier_id === parseInt(selectedSupplier)
+      material => 
+        material.supplier_id === parseInt(selectedSupplier) && 
+        !requestItems.some(item => item.material_id === material.material_id)
     );
-  }, [allMaterials, selectedSupplier]);
+  }, [allMaterials, selectedSupplier, requestItems]);
   
   // Function to refetch materials
   const refetchMaterials = () => {
@@ -148,7 +151,14 @@ const NewRequestPage = () => {
 
   // Remove an item from the request
   const removeItem = (itemId) => {
+    // Find the item before removing it (for visual feedback)
+    const itemToRemove = requestItems.find(item => item.id === itemId);
+    
+    // Remove the item from the request items
     setRequestItems(requestItems.filter(item => item.id !== itemId));
+    
+    // Show a visual feedback - the item will automatically return to the available list
+    // due to our useMemo dependency on requestItems
   };
 
   // Calculate total estimated cost
@@ -341,34 +351,50 @@ const NewRequestPage = () => {
                     <div className="space-y-6">
                       <div className="border rounded-md p-4 bg-muted/10">
                         <h3 className="font-medium mb-3">Articles disponibles</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {materials.map(material => (
-                            <div
-                              key={material.material_id}
-                              className="p-3 border rounded-lg flex flex-col justify-between bg-card"
-                            >
-                              <div>
-                                <p className="font-medium">{material.name}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {material.category} • Stock: {material.stock_available}
-                                </p>
-                                <p className="text-sm font-medium mt-1">
-                                  {formatCurrency(material.unit_price)}
-                                </p>
-                              </div>
-                              <Button 
-                                type="button" 
-                                variant="outline" 
-                                size="sm" 
-                                className="mt-2"
-                                onClick={() => addItem(material.material_id)}
+                        {materials.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {materials.map(material => (
+                              <div
+                                key={material.material_id}
+                                className="p-3 border rounded-lg flex flex-col justify-between bg-card"
                               >
-                                <Plus className="h-3.5 w-3.5 mr-1" />
-                                Ajouter
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
+                                <div>
+                                  <p className="font-medium">{material.name}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {material.category} • Stock: {material.stock_available}
+                                  </p>
+                                  <p className="text-sm font-medium mt-1">
+                                    {formatCurrency(material.unit_price)}
+                                  </p>
+                                </div>
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="mt-2"
+                                  onClick={() => addItem(material.material_id)}
+                                >
+                                  <Plus className="h-3.5 w-3.5 mr-1" />
+                                  Ajouter
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 border rounded-md text-muted-foreground">
+                            {requestItems.length > 0 ? (
+                              <>
+                                <p>Tous les articles disponibles ont été ajoutés</p>
+                                <p className="text-sm">Vous pouvez retirer des articles de votre sélection pour les faire réapparaître ici</p>
+                              </>
+                            ) : (
+                              <>
+                                <p>Aucun article disponible chez ce fournisseur</p>
+                                <p className="text-sm">Veuillez sélectionner un autre fournisseur ou contacter votre administrateur</p>
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
                       
                       <div>
@@ -491,6 +517,7 @@ const NewRequestPage = () => {
               type="button" 
               variant="outline"
               onClick={() => navigate('/orders')}
+              disabled={submitRequest.isPending}
             >
               Annuler
             </Button>
@@ -499,11 +526,21 @@ const NewRequestPage = () => {
               disabled={
                 !selectedSupplier || 
                 !justification.trim() || 
-                requestItems.length === 0
+                requestItems.length === 0 ||
+                submitRequest.isPending
               }
             >
-              <Save className="h-4 w-4 mr-2" />
-              Soumettre la demande
+              {submitRequest.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Traitement en cours...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Soumettre la demande
+                </>
+              )}
             </Button>
           </div>
         </form>
