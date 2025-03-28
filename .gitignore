@@ -50,3 +50,8 @@ stylelintcache
 # Next.js (si applicable)
 .next/
 .vercel/
+
+# Environment variables
+.env
+.env.local
+.env.*
