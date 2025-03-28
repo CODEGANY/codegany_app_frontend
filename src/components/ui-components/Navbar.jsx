@@ -16,7 +16,7 @@ const Navbar = () => {
           {/* Logo and brand name */}
           <div className="flex items-center">
             <Link to="/dashboard" className="flex-shrink-0">
-              <span className="font-bold text-xl text-primary">EnterpriseFlow</span>
+              <span className="font-bold text-xl text-primary">Manage Corporate</span>
             </Link>
           </div>
           

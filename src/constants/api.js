@@ -2,7 +2,7 @@
  * Base URL for all API requests
  * This can be easily switched between environments (dev, staging, prod)
  */
-export const BASE_API_URL = import.meta.env.VITE_API_BASE_URL || 'https://d67f-66-9-179-193.ngrok-free.app';
+export const BASE_API_URL = import.meta.env.VITE_API_BASE_URL;
 
 /**
  * API endpoints
@@ -33,6 +33,14 @@ export const API_ENDPOINTS = {
     UPDATE: (id) => `/api/v1/purchase-requests/${id}`,
     DELETE: (id) => `/api/v1/purchase-requests/${id}`,
   },
+
+  // Approvals
+  APPROVALS: {
+    GET_ALL: '/api/v1/approvals',
+    GET_ONE: (id) => `/api/v1/approvals/${id}`,
+    CREATE: '/api/v1/approvals',
+    GET_BY_REQUEST: (requestId) => `/api/v1/purchase-requests/${requestId}/approval`,
+  },
   
   // Orders
   ORDERS: {
@@ -62,4 +70,14 @@ export const API_ENDPOINTS = {
     UPDATE: (id) => `/api/v1/materials/${id}`,
     DELETE: (id) => `/api/v1/materials/${id}`
   },
+
+  // Request Items
+  REQUEST_ITEMS: {
+    GET_BY_REQUEST: (requestId) => `/api/v1/request-items/${requestId}`
+  },
+
+  // Order Items
+  ORDER_ITEMS: {
+    GET_BY_ORDER: (orderId) => `/api/v1/order-items/${orderId}`
+  }
 };

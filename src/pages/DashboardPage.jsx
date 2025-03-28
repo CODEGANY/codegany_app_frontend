@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Navbar from '../components/ui-components/Navbar';
 import StatsCard from '../components/ui-components/StatsCard';
+import AISummaryCard from '../components/ui-components/AISummaryCard';
 import { ProductOrdersChart } from '../components/charts/ProductOrdersChart';
 import { ProductCostsChart } from '../components/charts/ProductCostsChart';
 import { 
@@ -18,12 +19,16 @@ import { Separator } from "../components/ui/separator";
 import LoadingSpinner from '../components/ui-components/LoadingSpinner';
 import ErrorAlert from '../components/ui-components/ErrorAlert';
 import { fetchDashboardData } from '../api/dashboardApi';
+import { useAISummary } from '../hooks/useAISummary';
 
 /**
  * Dashboard page component showing overview of purchase management system
  * @returns {JSX.Element} Dashboard page component
  */
 const DashboardPage = () => {
+  // Initialize the AI summary hook
+  const { generateSummary } = useAISummary();
+  
   // Fetch dashboard data using React Query
   const { 
     data: dashboardData,
@@ -139,6 +144,13 @@ const DashboardPage = () => {
                 className="stats-card opacity-0"
               />
             </div>
+
+            {/* AI Summary Card */}
+            <AISummaryCard
+              title="Analyse IA du tableau de bord"
+              description="Résumé et recommandations basés sur les données actuelles"
+              data={dashboardData}
+            />
 
             <Separator className="my-2" />
           </TabsContent>

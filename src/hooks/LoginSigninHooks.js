@@ -35,8 +35,22 @@ export const LoginSigninHooks = ()=>{
             toast.info('Utilisateur non inscrit');
             localStorage.removeItem('token');
           } else {
-            
+            // Store user data in context
             setUser({ token, ...response.user_data });
+            
+            // Store essential user info in localStorage
+            localStorage.setItem('userRole', response.user_data.role);
+            localStorage.setItem('userId', response.user_data.user_id);
+            localStorage.setItem('userName', response.user_data.username);
+            
+            // Store first name and last name if available
+            if (response.user_data.first_name) {
+              localStorage.setItem('userFirstName', response.user_data.first_name);
+            }
+            if (response.user_data.last_name) {
+              localStorage.setItem('userLastName', response.user_data.last_name);
+            }
+            
             toast.success('Connexion réussie');
             setTimeout(() => {
               navigate('/dashboard'); // Redirige vers HomePage
@@ -50,7 +64,14 @@ export const LoginSigninHooks = ()=>{
 
     const logout = () => {
       setUser(null);
+      // Clear all user data from localStorage
       localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userFirstName');
+      localStorage.removeItem('userLastName');
+      
       toast.info("Déconnexion réussie");
       navigate('/login');
     };

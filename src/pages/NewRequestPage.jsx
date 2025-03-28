@@ -41,10 +41,7 @@ const NewRequestPage = () => {
 
   // Fetch suppliers list
   const { 
-    data: suppliers = [],
-    isLoading: suppliersLoading,
-    error: suppliersError
-  } = useQuery({
+    data: suppliers = []  } = useQuery({
     queryKey: ['suppliers'],
     queryFn: async () => {
       const token = localStorage.getItem('token');
@@ -152,7 +149,6 @@ const NewRequestPage = () => {
   // Remove an item from the request
   const removeItem = (itemId) => {
     // Find the item before removing it (for visual feedback)
-    const itemToRemove = requestItems.find(item => item.id === itemId);
     
     // Remove the item from the request items
     setRequestItems(requestItems.filter(item => item.id !== itemId));
@@ -512,36 +508,56 @@ const NewRequestPage = () => {
             </CardContent>
           </Card>
           
-          <div className="flex justify-end gap-4">
-            <Button 
-              type="button" 
-              variant="outline"
-              onClick={() => navigate('/orders')}
-              disabled={submitRequest.isPending}
-            >
-              Annuler
-            </Button>
-            <Button 
-              type="submit"
-              disabled={
-                !selectedSupplier || 
-                !justification.trim() || 
-                requestItems.length === 0 ||
-                submitRequest.isPending
-              }
-            >
-              {submitRequest.isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Traitement en cours...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Soumettre la demande
-                </>
-              )}
-            </Button>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-end gap-4">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => navigate('/orders')}
+                disabled={submitRequest.isPending}
+              >
+                Annuler
+              </Button>
+              <Button 
+                type="submit"
+                disabled={
+                  !selectedSupplier || 
+                  !justification.trim() || 
+                  requestItems.length === 0 ||
+                  submitRequest.isPending
+                }
+              >
+                {submitRequest.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Traitement en cours...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Soumettre la demande
+                  </>
+                )}
+              </Button>
+            </div>
+            
+            {/* Form completion status */}
+            {(!selectedSupplier || !justification.trim() || requestItems.length === 0) && (
+              <div className="text-sm text-amber-500 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-md border border-amber-200 dark:border-amber-800">
+                <p className="font-medium mb-1">Pour soumettre cette demande, veuillez compléter :</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  {!selectedSupplier && (
+                    <li>Sélectionner un fournisseur</li>
+                  )}
+                  {!justification.trim() && (
+                    <li>Fournir une justification pour cette demande</li>
+                  )}
+                  {requestItems.length === 0 && (
+                    <li>Ajouter au moins un article à votre demande</li>
+                  )}
+                </ul>
+              </div>
+            )}
           </div>
         </form>
       </main>

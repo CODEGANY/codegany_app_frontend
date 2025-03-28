@@ -10,11 +10,6 @@ dist/
 .cache/
 out/
 
-# Fichiers d'environnement
-.env
-.env.local
-.env.*.local
-
 # Logs
 npm-debug.log*
 yarn-debug.log*

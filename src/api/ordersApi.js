@@ -34,7 +34,7 @@ export const fetchOrdersAndRequests = async () => {
       for (const request of requestsResponse.data) {
         // Fetch request items for each request
         const requestItemsResponse = await axios.get(
-          `${BASE_API_URL}/api/v1/request-items/${request.request_id}`,
+          `${BASE_API_URL}${API_ENDPOINTS.REQUEST_ITEMS.GET_BY_REQUEST(request.request_id)}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -90,7 +90,7 @@ export const fetchMaterialDetails = async (materialId) => {
       throw new Error('No authentication token found');
     }
     
-    const response = await axios.get(`${BASE_API_URL}/api/v1/materials/${materialId}`, {
+    const response = await axios.get(`${BASE_API_URL}${API_ENDPOINTS.MATERIALS.GET_ONE(materialId)}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -170,7 +170,7 @@ export const fetchRequestDetails = async (requestId) => {
 
     // Fetch request items
     const requestItemsResponse = await axios.get(
-      `${BASE_API_URL}/api/v1/request-items/${requestId}`,
+      `${BASE_API_URL}${API_ENDPOINTS.REQUEST_ITEMS.GET_BY_REQUEST(requestId)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -241,7 +241,7 @@ export const fetchOrderDetails = async (orderId) => {
     );
     // Fetch order items
     const orderItemsResponse = await axios.get(
-      `${BASE_API_URL}/api/v1/order-items/${orderId}`,
+      `${BASE_API_URL}${API_ENDPOINTS.ORDER_ITEMS.GET_BY_ORDER(orderId)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`

@@ -1,12 +1,13 @@
 // filepath: /Users/krishna/Dev/codegany/codegany_app_frontend/src/pages/RequestDetailPage.jsx
-import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Navbar from '../components/ui-components/Navbar';
 import RequestItemsTable from '../components/ui-components/RequestItemsTable';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Separator } from "../components/ui/separator";
+import { toast } from 'sonner';
 import { 
   ArrowLeft, 
   User, 
@@ -16,13 +17,20 @@ import {
   Check, 
   X, 
   ShoppingCart,
-  Clock
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import LoadingSpinner from '../components/ui-components/LoadingSpinner';
 import ErrorAlert from '../components/ui-components/ErrorAlert';
 import { fetchRequestDetails } from '../api/ordersApi';
+import { createApproval } from '../api/approvalsApi';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import ApprovalModal from '../components/ui-components/ApprovalModal';
+import { Alert, AlertTitle, AlertDescription } from '../components/ui/alert';
 
 /**
  * Status configuration map for request status
@@ -79,6 +87,11 @@ const formatDate = (dateStr) => {
  */
 const RequestDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  
+  // State for approval modals
+  const [approvalMode, setApprovalMode] = useState(null); // 'approve', 'reject', or 'info'
   
   // Fetch request details using React Query
   const { 
@@ -88,12 +101,54 @@ const RequestDetailPage = () => {
     error,
     refetch
   } = useQuery({
-    queryKey: ['requestDetail', id],
-    queryFn: () => fetchRequestDetails(id),
-    enabled: !!id,
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    queryKey: ['request', id],
+    queryFn: () => fetchRequestDetails(parseInt(id)),
+    enabled: !!id
   });
 
+  // User role check (assuming we can get it from localStorage or a context)
+  const userRole = localStorage.getItem('userRole') || 'logistique';
+  const canApprove = userRole === 'daf' && request?.status === 'pending';
+  
+  // Create approval mutation
+  const approvalMutation = useMutation({
+    mutationFn: async ({ decision, comment }) => {
+      return await createApproval(request.request_id, decision, comment);
+    },
+    onSuccess: (data, variables) => {
+      // Close modal and invalidate relevant queries to refresh data
+      setApprovalMode(null);
+      queryClient.invalidateQueries(['request', id]);
+      queryClient.invalidateQueries(['orders']); // Refresh orders list
+      queryClient.invalidateQueries(['requests']); // Refresh requests list
+      
+      // Show success message based on decision
+      const actionType = 
+        variables.decision === 'approved' ? 'approuvée' : 
+        variables.decision === 'rejected' ? 'rejetée' : 
+        'en attente d\'information';
+      toast.success(`Demande ${actionType} avec succès`);
+      
+      // Redirect to orders page after successful approval/rejection
+      navigate('/orders');
+    },
+    onError: (error) => {
+      console.error("Error processing approval:", error);
+      toast.error(`Erreur: ${error.message || "Une erreur est survenue lors du traitement de cette demande."}`);
+      setApprovalMode(null);
+    }
+  });
+  
+  // Handle modal submission
+  const handleApprovalSubmit = (comment) => {
+    const decision = 
+      approvalMode === 'approve' ? 'approved' : 
+      approvalMode === 'reject' ? 'rejected' : 
+      'pending_info';
+    
+    approvalMutation.mutate({ decision, comment });
+  };
+  
   useEffect(() => {
     if (request) {
       document.title = `Demande #${request.request_id} - EnterpriseFlow`;
@@ -171,40 +226,97 @@ const RequestDetailPage = () => {
   
   // Get appropriate action buttons based on status
   const getActionButtons = (status) => {
+    // If action is in progress, show no buttons
+    if (approvalMutation.isPending) {
+      return (
+        <div className="p-4 border rounded-md bg-gray-50">
+          <div className="flex justify-center items-center py-2">
+            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+            <span>Traitement en cours...</span>
+          </div>
+        </div>
+      );
+    }
+
     switch (status) {
       case 'pending':
-        return (
+        // Only show approval buttons if user has DAF role
+        return canApprove ? (
           <>
-            <Button className="w-full justify-start" variant="outline">
+            <Button 
+              className="w-full justify-start" 
+              variant="outline"
+              onClick={() => setApprovalMode('approve')}
+            >
               <Check className="mr-2 h-4 w-4" />
               Approuver la demande
             </Button>
             
-            <Button className="w-full justify-start" variant="outline">
+            <Button 
+              className="w-full justify-start" 
+              variant="outline"
+              onClick={() => setApprovalMode('reject')}
+            >
               <X className="mr-2 h-4 w-4" />
               Rejeter la demande
             </Button>
             
-            <Button className="w-full justify-start" variant="outline">
+            <Button 
+              className="w-full justify-start" 
+              variant="outline"
+              onClick={() => setApprovalMode('info')}
+            >
               <Clock className="mr-2 h-4 w-4" />
               Demander plus d'informations
             </Button>
           </>
+        ) : (
+          <Alert>
+            <AlertCircle className="h-4 w-4 mr-2" />
+            <AlertTitle>En attente d'approbation</AlertTitle>
+            <AlertDescription>
+              Cette demande est en cours d'examen par la direction financière.
+            </AlertDescription>
+          </Alert>
         );
       case 'approved':
         return (
-          <Button className="w-full justify-start" variant="outline">
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            Créer une commande
-          </Button>
+          <>
+            <Button 
+              className="w-full justify-start" 
+              variant="outline"
+              onClick={() => navigate(`/orders/create/${request.request_id}`)}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Créer une commande
+            </Button>
+            <Alert className="bg-green-50 text-green-700 border-green-200">
+              <CheckCircle className="h-4 w-4" />
+              <AlertTitle>Demande approuvée</AlertTitle>
+              <AlertDescription>
+                Cette demande a été approuvée par la direction financière.
+              </AlertDescription>
+            </Alert>
+          </>
         );
-      case 'rejected':
+      case 'rejected': {
+        const rejectionReason = request?.approval?.comment;
         return (
-          <Button className="w-full justify-start" variant="outline">
-            <FileText className="mr-2 h-4 w-4" />
-            Voir les raisons du rejet
-          </Button>
+          <>
+            <Button className="w-full justify-start" variant="outline">
+              <FileText className="mr-2 h-4 w-4" />
+              Voir les raisons du rejet
+            </Button>
+            <Alert className="bg-red-50 text-red-700 border-red-200">
+              <XCircle className="h-4 w-4" />
+              <AlertTitle>Demande rejetée</AlertTitle>
+              <AlertDescription>
+                {rejectionReason || "Cette demande a été rejetée par la direction financière."}
+              </AlertDescription>
+            </Alert>
+          </>
         );
+      }
       default:
         return (
           <Button className="w-full justify-start" variant="outline">
@@ -218,6 +330,17 @@ const RequestDetailPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      
+      {/* Full-screen loading overlay when processing approval/rejection */}
+      {approvalMutation.isPending && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-card p-8 rounded-lg shadow-lg text-center">
+            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-lg font-medium">Traitement en cours...</p>
+            <p className="text-sm text-muted-foreground mt-2">Veuillez patienter pendant le traitement de votre demande</p>
+          </div>
+        </div>
+      )}
       
       <main className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
         <div>
@@ -315,6 +438,31 @@ const RequestDetailPage = () => {
         <RequestItemsTable 
           items={request.request_items || []}
           totalAmount={request.total_estimated_cost || 0}
+        />
+        
+        {/* Approval modals */}
+        <ApprovalModal 
+          isOpen={approvalMode === 'approve'}
+          onClose={() => setApprovalMode(null)}
+          onSubmit={handleApprovalSubmit}
+          mode="approve"
+          isLoading={approvalMutation.isPending}
+        />
+        
+        <ApprovalModal 
+          isOpen={approvalMode === 'reject'}
+          onClose={() => setApprovalMode(null)}
+          onSubmit={handleApprovalSubmit}
+          mode="reject"
+          isLoading={approvalMutation.isPending}
+        />
+        
+        <ApprovalModal 
+          isOpen={approvalMode === 'info'}
+          onClose={() => setApprovalMode(null)}
+          onSubmit={handleApprovalSubmit}
+          mode="info"
+          isLoading={approvalMutation.isPending}
         />
       </main>
     </div>
